@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
                 editor.apply();
 
                 startActivity(new Intent(this, GoActivity.class));
+                finish();
             });
         }
     }
