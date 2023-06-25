@@ -16,6 +16,8 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.example.mini_projet_03.db.QuotesDbOpenHelper;
+import com.example.mini_projet_03.models.Quote;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +29,7 @@ public class GoActivity extends AppCompatActivity {
     ImageView iv_randomImage;
     ArrayList<String> imagesLinks;
     NetworkChangeReceiver networkChangeReceiver;
+    QuotesDbOpenHelper db;
     //endregion
 
     @Override
@@ -41,6 +44,7 @@ public class GoActivity extends AppCompatActivity {
                 "https://iili.io/H4a4Dk7.png", "https://iili.io/H4a4Z22.png",
                 "https://iili.io/H4a4bp9.png", "https://iili.io/H4a4pIe.png"));
         networkChangeReceiver = new NetworkChangeReceiver();
+        db = new QuotesDbOpenHelper(this);
         //endregion
 
 
@@ -49,6 +53,18 @@ public class GoActivity extends AppCompatActivity {
         } else {
             iv_randomImage.setImageResource(R.drawable.image_not_available);
         }
+
+        btn_go.setOnClickListener(v -> {
+            startActivity(new Intent(this, QuotesActivity.class));
+
+        });
+
+        db.add(new Quote("Be yourself; everyone else is already taken", "Oscar Wilde"));
+        db.add(new Quote("If you tell the truth, you don't have to remember anything", "Mark Twain"));
+        db.add(new Quote("To live is the rarest thing in the world. Most people exist, that is all", "Oscar Wilde"));
+        db.add(new Quote("o be yourself in a world that is constantly trying to make you something else is the greatest accomplishment",
+                "Ralph Waldo Emerson"));
+        db.add(new Quote("Silence is golden when you can't think of a good answer", "Muhammad Ali"));
     }
 
     @Override
