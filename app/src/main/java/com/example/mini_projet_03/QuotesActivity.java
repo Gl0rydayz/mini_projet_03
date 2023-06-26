@@ -36,7 +36,7 @@ public class QuotesActivity extends AppCompatActivity {
         rv_quotes = findViewById(R.id.rv_quotes);
         db = new QuotesDbOpenHelper(this);
         quotes = new ArrayList<>(db.getAll());
-        RVQuotes_Adapter adapter = new RVQuotes_Adapter(quotes);
+        RVQuotes_Adapter adapter = new RVQuotes_Adapter(quotes, getSupportFragmentManager());
 
         et_addQuote = findViewById(R.id.et_addQuote);
         et_addAuthor = findViewById(R.id.et_addAuthor);

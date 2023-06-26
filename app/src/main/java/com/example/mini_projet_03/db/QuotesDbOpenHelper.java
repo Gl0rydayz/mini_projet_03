@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
-import com.example.mini_projet_03.db.QuotesContract;
 import com.example.mini_projet_03.models.Quote;
 
 import java.util.ArrayList;
@@ -16,40 +15,64 @@ import java.util.ArrayList;
 public class QuotesDbOpenHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "Quotes.db";
-    private static final String SQL_CREATE_FAVORITE_QUOTES = String.format("CREATE TABLE %s (" +
+    public static final String TABLE_NAME = "quotes";
+    public static final String COLUMN_NAME_QUOTE = "quote";
+    public static final String COLUMN_NAME_AUTHOR = "author";
+    private static final String SQL_CREATE_QUOTE = String.format("CREATE TABLE %s (" +
                     "%s TEXT PRIMARY KEY," +
                     "%s TEXT)",
-            QuotesContract.info.TABLE_NAME,
-            QuotesContract.info.COLUMN_NAME_QUOTE,
-            QuotesContract.info.COLUMN_NAME_AUTHOR);
+            TABLE_NAME,
+            COLUMN_NAME_QUOTE,
+            COLUMN_NAME_AUTHOR);
 
-    private static final String SQL_DELETE_FAVORITEQUOTE = String.format("DROP TABLE IS EXISTS %s",
-            QuotesContract.info.TABLE_NAME);
+    private static final String SQL_DELETE_QUOTE = String.format("DROP TABLE IS EXISTS %s",
+            TABLE_NAME);
+
+    //______________________________________________________________________________________________
 
     public QuotesDbOpenHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    //______________________________________________________________________________________________
+
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL(SQL_CREATE_FAVORITE_QUOTES);
+        sqLiteDatabase.execSQL(SQL_CREATE_QUOTE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        sqLiteDatabase.execSQL(SQL_DELETE_FAVORITEQUOTE);
+        sqLiteDatabase.execSQL(SQL_DELETE_QUOTE);
         onCreate(sqLiteDatabase);
     }
+
+    //______________________________________________________________________________________________
 
     //region Method to add to Database
     public void add(Quote quote) {
         SQLiteDatabase db = QuotesDbOpenHelper.this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(QuotesContract.info.COLUMN_NAME_QUOTE, quote.getQuote());
-        values.put(QuotesContract.info.COLUMN_NAME_AUTHOR, quote.getAuthor());
+        values.put(COLUMN_NAME_QUOTE, quote.getQuote());
+        values.put(COLUMN_NAME_AUTHOR, quote.getAuthor());
 
-        db.insert(QuotesContract.info.TABLE_NAME, null, values);
+        db.insert(TABLE_NAME, null, values);
+    }
+    //endregion
+
+    //region Method to update quotes in database
+    public void update(Quote originQuote, Quote updatedQuote) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_NAME_QUOTE, updatedQuote.getQuote());
+        values.put(COLUMN_NAME_AUTHOR, updatedQuote.getAuthor());
+
+        String selection = COLUMN_NAME_QUOTE + " = ?";
+        String[] selectionArgs = { originQuote.getQuote() };
+
+        db.update(TABLE_NAME, values, selection, selectionArgs);
     }
     //endregion
 
@@ -59,12 +82,12 @@ public class QuotesDbOpenHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = QuotesDbOpenHelper.this.getReadableDatabase();
 
         String[] projection = {
-                QuotesContract.info.COLUMN_NAME_QUOTE,
-                QuotesContract.info.COLUMN_NAME_AUTHOR
+                COLUMN_NAME_QUOTE,
+                COLUMN_NAME_AUTHOR
         };
 
         Cursor cursor = db.query(
-                QuotesContract.info.TABLE_NAME,   // The table to query
+                TABLE_NAME,   // The table to query
                 projection,
                 null,
                 null,
@@ -75,9 +98,9 @@ public class QuotesDbOpenHelper extends SQLiteOpenHelper {
 
         while (cursor.moveToNext()) {
             String quote = cursor.getString(
-                    cursor.getColumnIndexOrThrow(QuotesContract.info.COLUMN_NAME_QUOTE));
+                    cursor.getColumnIndexOrThrow(COLUMN_NAME_QUOTE));
             String author = cursor.getString(
-                    cursor.getColumnIndexOrThrow(QuotesContract.info.COLUMN_NAME_AUTHOR));
+                    cursor.getColumnIndexOrThrow(COLUMN_NAME_AUTHOR));
 
             quotes.add(new Quote(quote, author));
         }
