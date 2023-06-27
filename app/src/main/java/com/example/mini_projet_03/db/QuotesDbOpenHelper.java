@@ -109,4 +109,14 @@ public class QuotesDbOpenHelper extends SQLiteOpenHelper {
         return quotes;
     }
     //endregion
+
+    public void delete(Quote quote) {
+        SQLiteDatabase db = QuotesDbOpenHelper.this.getWritableDatabase();
+
+        String selection = COLUMN_NAME_QUOTE + " = ?";
+
+        String[] selectionArgs = {quote.getQuote()};
+
+        db.delete(TABLE_NAME, selection, selectionArgs);
+    }
 }

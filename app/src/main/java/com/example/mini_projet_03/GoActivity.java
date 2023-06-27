@@ -61,9 +61,6 @@ public class GoActivity extends AppCompatActivity {
 
         db.add(new Quote("Be yourself; everyone else is already taken", "Oscar Wilde"));
         db.add(new Quote("If you tell the truth, you don't have to remember anything", "Mark Twain"));
-        db.add(new Quote("To live is the rarest thing in the world. Most people exist, that is all", "Oscar Wilde"));
-        db.add(new Quote("o be yourself in a world that is constantly trying to make you something else is the greatest accomplishment",
-                "Ralph Waldo Emerson"));
         db.add(new Quote("Silence is golden when you can't think of a good answer", "Muhammad Ali"));
     }
 

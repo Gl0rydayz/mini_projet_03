@@ -16,14 +16,14 @@ import com.example.mini_projet_03.models.Quote;
 
 import java.util.ArrayList;
 
-public class QuotesActivity extends AppCompatActivity {
+public class QuotesActivity extends AppCompatActivity implements RVQuotes_Adapter.onItemSelectedListener {
     //region Declare Attribues
     RecyclerView rv_quotes;
     ArrayList<Quote> quotes;
     QuotesDbOpenHelper db;
 
     EditText et_addQuote, et_addAuthor;
-    Button btn_add;
+    Button btn_add, btn_delete;
     //endregion
 
     @SuppressLint("NotifyDataSetChanged")
@@ -36,11 +36,12 @@ public class QuotesActivity extends AppCompatActivity {
         rv_quotes = findViewById(R.id.rv_quotes);
         db = new QuotesDbOpenHelper(this);
         quotes = new ArrayList<>(db.getAll());
-        RVQuotes_Adapter adapter = new RVQuotes_Adapter(quotes, getSupportFragmentManager());
+        RVQuotes_Adapter adapter = new RVQuotes_Adapter(quotes, getSupportFragmentManager(), this);
 
         et_addQuote = findViewById(R.id.et_addQuote);
         et_addAuthor = findViewById(R.id.et_addAuthor);
         btn_add = findViewById(R.id.btn_add);
+        btn_delete = findViewById(R.id.btn_delete);
         //endregion
 
         rv_quotes.setAdapter(adapter);
@@ -55,13 +56,8 @@ public class QuotesActivity extends AppCompatActivity {
             if(!quoteContent.equals("") && !authorName.equals("")) {
                 db.add(new Quote(quoteContent, authorName));
 
-                // Create a new Quote object with the added quote
                 Quote newQuote = new Quote(quoteContent, authorName);
-
-                // Add the new quote to the ArrayList
                 quotes.add(newQuote);
-
-                // Notify the adapter that a new item has been inserted
                 adapter.notifyItemInserted(quotes.size() - 1);
 
                 // Clear the input fields
@@ -74,4 +70,16 @@ public class QuotesActivity extends AppCompatActivity {
             }
         });
     }
+
+    //region Change the number of selected quotes Dynamically and delete them
+    @Override
+    public void onQuoteSelected(int value, ArrayList<Integer> positions) {
+        btn_delete.setText(String.format("Delete(%d)", value));
+        btn_delete.setOnClickListener(v -> {
+            for (int i = 0; i < positions.size(); i++) {
+                db.delete(quotes.get(i));
+            }
+        });
+    }
+    //endregion
 }
