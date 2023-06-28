@@ -62,6 +62,15 @@ public class GoActivity extends AppCompatActivity {
         db.add(new Quote("Be yourself; everyone else is already taken", "Oscar Wilde"));
         db.add(new Quote("If you tell the truth, you don't have to remember anything", "Mark Twain"));
         db.add(new Quote("Silence is golden when you can't think of a good answer", "Muhammad Ali"));
+        db.add(new Quote("To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment ", "Ralph Waldo Emerson"));
+        db.add(new Quote("Always forgive your enemies; nothing annoys them so much", "Oscar Wilde"));
+        db.add(new Quote("Ralph Waldo Emerson", "Mark Twain"));
+        db.add(new Quote("We can't solve problems by using the same kind of thinking we used when we created them", "Albert Einstein"));
+        db.add(new Quote("Don't count the days. Make the days count", "Muhammad Ali"));
+        db.add(new Quote("Coding like poetry should be short and concise", "Santosh Kalwar"));
+        db.add(new Quote("Clean code always looks like it was written by someone who cares", "Robert C. Martin"));
+        db.add(new Quote("Experience is the name everyone gives to their mistakes", "Oscar Wilde"));
+        db.add(new Quote("Of course, bad code can be cleaned up. But it’s very expensive.", "Robert C. Martin"));
     }
 
     @Override

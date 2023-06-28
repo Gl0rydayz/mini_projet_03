@@ -17,7 +17,15 @@ import com.example.mini_projet_03.R;
 import com.example.mini_projet_03.UpdateQuoteDialogFragment;
 import com.example.mini_projet_03.models.Quote;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import java.io.InputStream;
 import java.util.ArrayList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 public class RVQuotes_Adapter extends RecyclerView.Adapter<RVQuotes_Adapter.MyViewHolder> {
     ArrayList<Quote> quotes;
@@ -55,7 +63,7 @@ public class RVQuotes_Adapter extends RecyclerView.Adapter<RVQuotes_Adapter.MyVi
     @Override
     public RVQuotes_Adapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.quote_item_layout, parent, false);
-        itemView.setBackgroundColor(Color.parseColor("#FDF5E6"));
+
         return new MyViewHolder(itemView);
     }
 
@@ -63,6 +71,34 @@ public class RVQuotes_Adapter extends RecyclerView.Adapter<RVQuotes_Adapter.MyVi
     public void onBindViewHolder(@NonNull RVQuotes_Adapter.MyViewHolder holder, int position) {
         holder.tv_itemQuote.setText(quotes.get(position).getQuote());
         holder.tv_itemAuthor.setText(quotes.get(position).getAuthor());
+
+//        holder.itemView.setBackgroundColor(Color.parseColor("#FDF5E6"));
+
+        //region Get the colors from colors.xml from the raw folder and apply them to the background of each item
+        try {
+            //region Parsing the xml file colors.xml
+            InputStream inputStream = holder.itemView.getContext().getResources().openRawResource(R.raw.colors);
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(inputStream);
+            //endregion
+
+            NodeList nodes = document.getElementsByTagName("color");
+            if (nodes.getLength() >= 3) {
+                Element element = (Element) nodes.item(position % 3);
+
+                //region get the rgb from each element
+                int r = Integer.parseInt(element.getElementsByTagName("r").item(0).getTextContent());
+                int g = Integer.parseInt(element.getElementsByTagName("g").item(0).getTextContent());
+                int b = Integer.parseInt(element.getElementsByTagName("b").item(0).getTextContent());
+                //endregion
+
+                holder.itemView.setBackgroundColor(Color.rgb(r, g, b));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //endregion
 
         //region Call the DialogFragment
         holder.btn_itemUpdate.setOnClickListener(v -> {
