@@ -3,11 +3,16 @@ package com.example.mini_projet_03;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.mini_projet_03.adapters.RVQuotes_Adapter;
@@ -24,6 +29,7 @@ public class QuotesActivity extends AppCompatActivity implements RVQuotes_Adapte
 
     EditText et_addQuote, et_addAuthor;
     Button btn_add, btn_delete;
+    ImageButton ib_download;
     //endregion
 
     @SuppressLint("NotifyDataSetChanged")
@@ -42,6 +48,7 @@ public class QuotesActivity extends AppCompatActivity implements RVQuotes_Adapte
         et_addAuthor = findViewById(R.id.et_addAuthor);
         btn_add = findViewById(R.id.btn_add);
         btn_delete = findViewById(R.id.btn_delete);
+        ib_download = findViewById(R.id.ib_download);
         //endregion
 
         rv_quotes.setAdapter(adapter);
@@ -69,6 +76,28 @@ public class QuotesActivity extends AppCompatActivity implements RVQuotes_Adapte
                 Toast.makeText(this, "Insert the quote content and it's author's name !!!", Toast.LENGTH_SHORT).show();
             }
         });
+
+        //region Handle Download ImageButton
+        ib_download.setOnClickListener(v -> {
+
+            //region Constraints to check if the state of the battery
+            Constraints batteryConstraints = new Constraints.Builder()
+                    .setRequiresCharging(true)
+                    .setRequiresBatteryNotLow(true)
+                    .build();
+            //endregion
+
+            Data inputData = new Data.Builder().build();
+
+            OneTimeWorkRequest downloadRequest = new OneTimeWorkRequest.Builder(AppWorker.class)
+                    .setInputData(inputData)
+                    .setConstraints(batteryConstraints)
+                    .build();
+
+            WorkManager.getInstance(this).enqueue(downloadRequest);
+            Toast.makeText(this, "Downloading", Toast.LENGTH_SHORT).show();
+        });
+        //endregion
     }
 
     //region Change the number of selected quotes Dynamically and delete them
